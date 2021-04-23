@@ -1,5 +1,5 @@
-import numpy as np
 import pandas as pd
+
 
 class Data:
     def __init__(self, file):
@@ -18,9 +18,13 @@ class Data:
         self.runs = int(df.iloc[0, 0].split('/')[1].split(')')[0])
         try:
             self.elec = df.iloc[0, 0].split('Elec=')[1].split(' ')[0]
+        except IndexError:
+            self.elec = 'None'
+
+        try:
             self.rho = df.iloc[0, 0].split('Rho=')[1].split(' ')[0]
-        except(IndexError):
-            pass
+        except IndexError:
+            self.rho = 'None'
 
         # Putting the desired dataframes together
         nans = self.dict_of_measurements[columns[1]][self.dict_of_measurements[columns[1]].isnull()].index
@@ -43,9 +47,3 @@ class Data:
             self.dict_of_df[column] = rearrange_to_dataframe(self.dict_of_measurements[column])
 
         self.dict_of_df[df.columns[0]] = self.dict_of_measurements[df.columns[0]][0:self.steps].reset_index(drop=True)
-
-
-case1 = Data('FBP_Case1spec.txt')
-case6 = Data('FBP_Case6_spec.txt')
-case18 = Data('LIP_Case18spec.txt')
-
