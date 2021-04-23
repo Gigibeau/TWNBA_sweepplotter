@@ -1,4 +1,4 @@
-from TWNBA_sweepplotter import Data
+from TWNBA_sweepplotter_old import Data
 from tkinter import *  # NOQA
 from tkinter import ttk
 from tkinter import filedialog
