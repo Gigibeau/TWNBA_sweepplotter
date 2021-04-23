@@ -4,8 +4,17 @@ import pandas as pd
 class Data:
     def __init__(self, file):
 
-        # Loading the file into a dataframe and extracting information (runs, elec, rho)
+        # Loading the file into a dataframe and extracting information
         df = pd.read_csv(file, sep='\t')
+        columns = pd.Series(df.columns).drop(index=0)
+
+        self.dict_of_measurements = {}
+        count = 0
+        for column in df.columns:
+            self.dict_of_measurements[column] = df.iloc[1:, count]
+            count += 1
+
+        self.sweep = df.columns[0]
         self.runs = int(df.iloc[0, 0].split('/')[1].split(')')[0])
         try:
             self.elec = df.iloc[0, 0].split('Elec=')[1].split(' ')[0]
@@ -13,14 +22,8 @@ class Data:
         except(IndexError):
             pass
 
-        # Seperating the measured values into pandas series
-        i_vs = df.iloc[1:, 0]
-        r_rs = df.iloc[1:, 1]
-        r_vs = df.iloc[1:, 2]
-        r_vs_rs = df.iloc[1:, 3]
-
         # Putting the desired dataframes together
-        nans = r_rs[r_rs.isnull()].index
+        nans = self.dict_of_measurements[columns[1]][self.dict_of_measurements[columns[1]].isnull()].index
         self.steps = nans[0] - 1
 
         def rearrange_to_dataframe(series):
@@ -35,14 +38,14 @@ class Data:
             desired_df.columns = range(self.runs)
             return desired_df
 
-        self.df_r_rs = rearrange_to_dataframe(r_rs)
-        self.df_r_vs = rearrange_to_dataframe(r_vs)
-        self.df_r_vs_rs = rearrange_to_dataframe(r_vs_rs)
+        self.dict_of_df = {}
+        for column in columns:
+            self.dict_of_df[column] = rearrange_to_dataframe(self.dict_of_measurements[column])
 
-        self.sweep = i_vs[0:self.steps].reset_index(drop=True)
+        self.dict_of_df[df.columns[0]] = self.dict_of_measurements[df.columns[0]][0:self.steps].reset_index(drop=True)
+
 
 case1 = Data('FBP_Case1spec.txt')
 case6 = Data('FBP_Case6_spec.txt')
 case18 = Data('LIP_Case18spec.txt')
 
-print('hi')
