@@ -57,12 +57,36 @@ class Data:
         for key in dict_of_indices:
             self.df[key] = dict_of_indices[key]
 
-        # Adding a DataFrame that shows all unique combinations & the number of plats necessary
+        # Adding a DataFrame that shows all unique combinations & the total number
         self.unique = self.df[self.parameters].drop_duplicates()
         self.combinations = len(self.unique)
 
         # Resolving dtype issue of the 0 column
         self.df[self.sweep] = pd.to_numeric(self.df[self.sweep])
 
-data = Data('FBP_Case1spec.txt')
-print(data.unique)
+
+def lineplot(data, num_plots, position1, position2, hue, first_param, first_value, second_param='None', second_value='None'):
+    ax = 0  # just to prevent errors
+    if num_plots == 4:
+        fig, ax = plt.subplots(2, 2, figsize=(10, 10))
+
+    if num_plots == 9:
+        fig, ax = plt.subplots(3, 3, figsize=(10, 10))
+
+    if second_param == 'None':
+        df_to_plot = data.df[(data.df[first_param] == first_value)]
+    else:
+        df_to_plot = data.df[(data.df[first_param] == first_value) & (data.df[second_param] == second_value)]
+
+    sns.lineplot(data=df_to_plot, x=data.sweep, y="I(R_vs)/I(R_rs)", hue=hue, ax=ax[position1, position2])
+    ax[position1, position2].set(ylim=(0.1, 10), xscale="log", yscale="log", xlabel='Sweep',
+                                 ylabel='Parameter 2', title='Parameter 1')
+
+    plt.show()
+    return fig
+
+
+#data_test = Data('FBP_Case1spec.txt')
+#print(data_test.dict_of_unique_param)
+#print(data.parameters)
+#lineplot(data_test, 6, 0, 0, 'I_rs', 'Elec', '100m', 'Rho', '100m')
