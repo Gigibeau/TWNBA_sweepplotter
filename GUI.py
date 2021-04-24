@@ -10,6 +10,8 @@ root = Tk()
 # Parameters
 #num_plots = StringVar()
 #list_of_lines = []
+first_digit = [0, 0, 1, 1]
+second_digit = [0, 1, 0, 1]
 
 
 # Button to load in a file
@@ -35,8 +37,8 @@ def open_files():
     button_set_num_plots.config(state='normal')
 
 # Placement of the log
-text = Text(root, width=50, height=20)
-text.grid(row=20, column=0, columnspan=10)
+text = Text(root, width=40, height=8)
+text.grid(row=0, column=3, columnspan=10)
 
 # Combo to pick the number of plots
 num_plots_values = ["4", "9"]
@@ -57,7 +59,7 @@ def set_num_plots(num, data):
         lines += 1
 
     button_exec_plot = Button(root, text='Execute', command=lambda: exec_plot())
-    button_exec_plot.grid(row=10, column=2, padx=2, pady=2)
+    button_exec_plot.grid(row=9, column=2, padx=2, pady=2)
 
 # Recipe input
 class Command:
@@ -96,19 +98,30 @@ class Command:
 
 # Executing the plot
 def exec_plot():
-    print(num_plots)
-    print(list_of_lines[0].combo_hue.get())
-    print(list_of_lines[0].combo_first_param.get())
-    print(list_of_lines[0].combo_first_value.get())
-    print(list_of_lines[0].combo_sec_param.get())
-    print(list_of_lines[0].combo_sec_value.get())
+    for count in range(num_plots):
+        print(num_plots)
+        print(list_of_lines[count].combo_hue.get())
+        print(list_of_lines[count].combo_first_param.get())
+        print(list_of_lines[count].combo_first_value.get())
+        print(list_of_lines[count].combo_sec_param.get())
+        print(list_of_lines[count].combo_sec_value.get())
 
+        plot = lineplot(class_data, num_plots, first_digit[count], second_digit[count], list_of_lines[count].combo_hue.get(),
+                        list_of_lines[count].combo_first_param.get(),
+                        list_of_lines[count].combo_first_value.get(), list_of_lines[count].combo_sec_param.get(),
+                        list_of_lines[count].combo_sec_value.get())
+
+        canvas = FigureCanvasTkAgg(plot, master=root)  # A tk.DrawingArea.
+        canvas.draw()
+        canvas.get_tk_widget().grid(row=10, column=0, columnspan=5, rowspan=5)
+
+'''
     plot = lineplot(class_data, num_plots, 0, 0, list_of_lines[0].combo_hue.get(), list_of_lines[0].combo_first_param.get(),
             list_of_lines[0].combo_first_value.get(), list_of_lines[0].combo_sec_param.get(), list_of_lines[0].combo_sec_value.get())
 
     canvas = FigureCanvasTkAgg(plot, master=root)  # A tk.DrawingArea.
     canvas.draw()
-    canvas.get_tk_widget().grid(row=10, column=10, columnspan=5, rowspan=5)
-
+    canvas.get_tk_widget().grid(row=10, column=0, columnspan=5, rowspan=5)
+'''
 
 root.mainloop()
