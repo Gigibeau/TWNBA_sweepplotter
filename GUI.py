@@ -7,6 +7,10 @@ from tkinter import filedialog
 root = Tk()
 
 # Parameters
+global canvas
+global class_data
+global num_plots
+global list_of_lines
 first_digit_4 = [0, 0, 1, 1]
 second_digit_4 = [0, 1, 0, 1]
 first_digit_9 = [0, 0, 0, 1, 1, 1, 2, 2, 2]
@@ -20,7 +24,7 @@ button_open.grid(row=0, column=0)
 def open_files():
     try:
         canvas.get_tk_widget().grid_forget()
-    except:
+    except NameError:
         pass
 
     for count in range(9):
@@ -30,12 +34,12 @@ def open_files():
             list_of_lines[count].combo_sec_param.grid_forget()
             list_of_lines[count].combo_first_value.grid_forget()
             list_of_lines[count].combo_sec_value.grid_forget()
-        except:
+        except (NameError, IndexError):
             pass
 
     file_name = filedialog.askopenfilename(title="Open File",
-        filetypes=(("Text Files", "*.txt"), ("All Files", "*.*"))
-    )
+                                           filetypes=(("Text Files", "*.txt"), ("All Files", "*.*"))
+                                           )
     global class_data
     class_data = Data(file_name)
 
@@ -70,7 +74,7 @@ def set_num_plots(num, data):
 
     try:
         canvas.get_tk_widget().grid_forget()
-    except:
+    except NameError:
         pass
 
     for count in range(9):
@@ -80,7 +84,7 @@ def set_num_plots(num, data):
             list_of_lines[count].combo_sec_param.grid_forget()
             list_of_lines[count].combo_first_value.grid_forget()
             list_of_lines[count].combo_sec_value.grid_forget()
-        except:
+        except (NameError, IndexError):
             pass
 
     num_plots = int(num)
@@ -105,10 +109,10 @@ class Command:
         param_with_none = data.parameters.copy()
         param_with_none.append('None')
 
-        def first_param_update(event):
+        def first_param_update(_):
             self.combo_first_value.config(values=data.dict_of_unique_param[self.combo_first_param.get()])
 
-        def sec_param_update(event):
+        def sec_param_update(_):
             if self.combo_sec_param.get() == 'None':
                 self.combo_sec_value.config(values=['None'])
                 self.combo_sec_value.current(0)
@@ -141,10 +145,11 @@ class Command:
 # Executing the plot
 def exec_plot(kind):
     global canvas
+    plot = None
 
     try:
         canvas.get_tk_widget().grid_forget()
-    except:
+    except NameError:
         pass
 
     set_grid(num_plots)
@@ -156,17 +161,19 @@ def exec_plot(kind):
                     plot = lineplot(class_data, first_digit_4[count], second_digit_4[count],
                                     list_of_lines[count].combo_hue.get(),
                                     list_of_lines[count].combo_first_param.get(),
-                                    list_of_lines[count].combo_first_value.get(), list_of_lines[count].combo_sec_param.get(),
+                                    list_of_lines[count].combo_first_value.get(),
+                                    list_of_lines[count].combo_sec_param.get(),
                                     list_of_lines[count].combo_sec_value.get())
                 elif num_plots == 9:
                     plot = lineplot(class_data, first_digit_9[count], second_digit_9[count],
                                     list_of_lines[count].combo_hue.get(),
                                     list_of_lines[count].combo_first_param.get(),
-                                    list_of_lines[count].combo_first_value.get(), list_of_lines[count].combo_sec_param.get(),
+                                    list_of_lines[count].combo_first_value.get(),
+                                    list_of_lines[count].combo_sec_param.get(),
                                     list_of_lines[count].combo_sec_value.get())
                 else:
                     plot = 0
-            except:
+            except (TypeError, KeyError):
                 pass
 
         if num_plots == 1:
@@ -182,30 +189,30 @@ def exec_plot(kind):
             try:
                 if num_plots == 4:
                     plot = kdeplot(class_data, first_digit_4[count], second_digit_4[count],
-                                    list_of_lines[count].combo_hue.get(),
-                                    list_of_lines[count].combo_first_param.get(),
-                                    list_of_lines[count].combo_first_value.get(),
-                                    list_of_lines[count].combo_sec_param.get(),
-                                    list_of_lines[count].combo_sec_value.get())
+                                   list_of_lines[count].combo_hue.get(),
+                                   list_of_lines[count].combo_first_param.get(),
+                                   list_of_lines[count].combo_first_value.get(),
+                                   list_of_lines[count].combo_sec_param.get(),
+                                   list_of_lines[count].combo_sec_value.get())
                 elif num_plots == 9:
                     plot = kdeplot(class_data, first_digit_9[count], second_digit_9[count],
-                                    list_of_lines[count].combo_hue.get(),
-                                    list_of_lines[count].combo_first_param.get(),
-                                    list_of_lines[count].combo_first_value.get(),
-                                    list_of_lines[count].combo_sec_param.get(),
-                                    list_of_lines[count].combo_sec_value.get())
+                                   list_of_lines[count].combo_hue.get(),
+                                   list_of_lines[count].combo_first_param.get(),
+                                   list_of_lines[count].combo_first_value.get(),
+                                   list_of_lines[count].combo_sec_param.get(),
+                                   list_of_lines[count].combo_sec_value.get())
                 else:
                     plot = 0
-            except:
+            except (TypeError, KeyError):
                 pass
 
         if num_plots == 1:
             plot = kdeplot(class_data, 'None', 'None',
-                            list_of_lines[0].combo_hue.get(),
-                            list_of_lines[0].combo_first_param.get(),
-                            list_of_lines[0].combo_first_value.get(),
-                            list_of_lines[0].combo_sec_param.get(),
-                            list_of_lines[0].combo_sec_value.get())
+                           list_of_lines[0].combo_hue.get(),
+                           list_of_lines[0].combo_first_param.get(),
+                           list_of_lines[0].combo_first_value.get(),
+                           list_of_lines[0].combo_sec_param.get(),
+                           list_of_lines[0].combo_sec_value.get())
 
     canvas = FigureCanvasTkAgg(plot, master=root)
     canvas.draw()
@@ -213,11 +220,14 @@ def exec_plot(kind):
 
     # Saving function
     button_save = Button(root, text="\U0001f4be", command=lambda: save_files())
-    button_save.grid(row=10, column=4)
+    button_save.grid(row=10, column=5)
+
 
 def save_files():
     file_name = filedialog.asksaveasfilename(title="Save File",
-        filetypes=(("PNG Files", "*.png"), ("All Files", "*.*"))
-    )
+                                             filetypes=(("PNG Files", "*.png"), ("All Files", "*.*"))
+                                             )
     save_plot(file_name, num_plots)
+
+
 root.mainloop()
