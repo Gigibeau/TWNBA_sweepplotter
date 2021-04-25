@@ -5,6 +5,12 @@ import re
 
 pd.options.mode.chained_assignment = None
 
+# Parameters
+first_digit_4 = [0, 0, 1, 1]
+second_digit_4 = [0, 1, 0, 1]
+first_digit_9 = [0, 0, 0, 1, 1, 1, 2, 2, 2]
+second_digit_9 = [0, 1, 2, 0, 1, 2, 0, 1, 2]
+
 
 class Data:
     def __init__(self, file):
@@ -68,13 +74,13 @@ class Data:
 def set_grid(num_plots):
     global fig, ax
     if num_plots == 4:
-        fig, ax = plt.subplots(2, 2, figsize=(8, 6))
+        fig, ax = plt.subplots(2, 2, figsize=(10, 8))
 
     if num_plots == 9:
-        fig, ax = plt.subplots(3, 3, figsize=(8, 6))
+        fig, ax = plt.subplots(3, 3, figsize=(10, 8))
 
     if num_plots == 1:
-        fig, ax = plt.subplots(1, 1, figsize=(8, 6))
+        fig, ax = plt.subplots(1, 1, figsize=(10, 8))
 
 
 def lineplot(data, position1, position2, hue, first_param, first_value, second_param='None', second_value='None'):
@@ -95,4 +101,43 @@ def lineplot(data, position1, position2, hue, first_param, first_value, second_p
         ax[position1, position2].set(ylim=(0.1, 10), xscale="log", yscale="log", xlabel='Sweep',
                                      ylabel='Parameter 2', title='Parameter 1')
 
+    fig.tight_layout()
     return fig
+
+def kdeplot(data, position1, position2, hue, first_param, first_value, second_param='None', second_value='None'):
+    if second_param == 'None':
+        df_to_plot = data.df[(data.df[first_param] == first_value)]
+    else:
+        df_to_plot = data.df[(data.df[first_param] == first_value) & (data.df[second_param] == second_value)]
+
+    if position1 == 'None':
+        sns.kdeplot(data=df_to_plot, x=data.sweep, y="I(R_vs)/I(R_rs)", hue=hue
+                     ).legend_.remove()
+        ax.set(ylim=(0.1, 10), xscale="log", yscale="log", xlabel='Sweep',
+                                     ylabel='Parameter 2', title='Parameter 1')
+
+    else:
+        sns.kdeplot(data=df_to_plot, x=data.sweep, y="I(R_vs)/I(R_rs)", hue=hue,
+                     ax=ax[position1, position2]).legend_.remove()
+        ax[position1, position2].set(ylim=(0.1, 10), xscale="log", yscale="log", xlabel='Sweep',
+                                     ylabel='Parameter 2', title='Parameter 1')
+
+    fig.tight_layout()
+    return fig
+
+
+def save_plot(name, num_plots):
+    plt.savefig(name)
+
+    name_num = 1
+    if num_plots == 4:
+        for x in range(4):
+            extent = ax[first_digit_4[x], second_digit_4[x]].get_window_extent().transformed(fig.dpi_scale_trans.inverted())
+            fig.savefig(name + '_' + str(name_num) +'.png', bbox_inches=extent.expanded(1.3, 1.3))
+            name_num += 1
+
+    if num_plots == 9:
+        for x in range(9):
+            extent = ax[first_digit_9[x], second_digit_9[x]].get_window_extent().transformed(fig.dpi_scale_trans.inverted())
+            fig.savefig(name + '_' + str(name_num) +'.png', bbox_inches=extent.expanded(1.3, 1.3))
+            name_num += 1

@@ -1,5 +1,5 @@
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from TWNBA_sweepplotter import Data, lineplot, set_grid
+from TWNBA_sweepplotter import Data, lineplot, set_grid, save_plot, kdeplot
 from tkinter import *  # NOQA
 from tkinter import ttk
 from tkinter import filedialog
@@ -90,8 +90,11 @@ def set_num_plots(num, data):
         list_of_lines.append(Command(lines, 1, data))
         lines += 1
 
-    button_exec_plot = Button(root, text='Execute', command=lambda: exec_plot())
-    button_exec_plot.grid(row=10, column=2, padx=2, pady=2)
+    button_exec_lineplot = Button(root, text='Execute Lineplot', command=lambda: exec_plot('line'))
+    button_exec_lineplot.grid(row=10, column=3)
+
+    button_exec_kdeplot = Button(root, text='Execute Kdeplot', command=lambda: exec_plot('kde'))
+    button_exec_kdeplot.grid(row=10, column=4)
 
 
 # Recipe input
@@ -136,7 +139,7 @@ class Command:
 
 
 # Executing the plot
-def exec_plot():
+def exec_plot(kind):
     global canvas
 
     try:
@@ -145,36 +148,76 @@ def exec_plot():
         pass
 
     set_grid(num_plots)
-    for count in range(num_plots):
-        try:
-            if num_plots == 4:
-                plot = lineplot(class_data, first_digit_4[count], second_digit_4[count],
-                                list_of_lines[count].combo_hue.get(),
-                                list_of_lines[count].combo_first_param.get(),
-                                list_of_lines[count].combo_first_value.get(), list_of_lines[count].combo_sec_param.get(),
-                                list_of_lines[count].combo_sec_value.get())
-            elif num_plots == 9:
-                plot = lineplot(class_data, first_digit_9[count], second_digit_9[count],
-                                list_of_lines[count].combo_hue.get(),
-                                list_of_lines[count].combo_first_param.get(),
-                                list_of_lines[count].combo_first_value.get(), list_of_lines[count].combo_sec_param.get(),
-                                list_of_lines[count].combo_sec_value.get())
-            else:
-                plot = 0
-        except:
-            pass
 
-    if num_plots == 1:
-        plot = lineplot(class_data, 'None', 'None',
-                        list_of_lines[0].combo_hue.get(),
-                        list_of_lines[0].combo_first_param.get(),
-                        list_of_lines[0].combo_first_value.get(),
-                        list_of_lines[0].combo_sec_param.get(),
-                        list_of_lines[0].combo_sec_value.get())
+    if kind == 'line':
+        for count in range(num_plots):
+            try:
+                if num_plots == 4:
+                    plot = lineplot(class_data, first_digit_4[count], second_digit_4[count],
+                                    list_of_lines[count].combo_hue.get(),
+                                    list_of_lines[count].combo_first_param.get(),
+                                    list_of_lines[count].combo_first_value.get(), list_of_lines[count].combo_sec_param.get(),
+                                    list_of_lines[count].combo_sec_value.get())
+                elif num_plots == 9:
+                    plot = lineplot(class_data, first_digit_9[count], second_digit_9[count],
+                                    list_of_lines[count].combo_hue.get(),
+                                    list_of_lines[count].combo_first_param.get(),
+                                    list_of_lines[count].combo_first_value.get(), list_of_lines[count].combo_sec_param.get(),
+                                    list_of_lines[count].combo_sec_value.get())
+                else:
+                    plot = 0
+            except:
+                pass
+
+        if num_plots == 1:
+            plot = lineplot(class_data, 'None', 'None',
+                            list_of_lines[0].combo_hue.get(),
+                            list_of_lines[0].combo_first_param.get(),
+                            list_of_lines[0].combo_first_value.get(),
+                            list_of_lines[0].combo_sec_param.get(),
+                            list_of_lines[0].combo_sec_value.get())
+
+    if kind == 'kde':
+        for count in range(num_plots):
+            try:
+                if num_plots == 4:
+                    plot = kdeplot(class_data, first_digit_4[count], second_digit_4[count],
+                                    list_of_lines[count].combo_hue.get(),
+                                    list_of_lines[count].combo_first_param.get(),
+                                    list_of_lines[count].combo_first_value.get(),
+                                    list_of_lines[count].combo_sec_param.get(),
+                                    list_of_lines[count].combo_sec_value.get())
+                elif num_plots == 9:
+                    plot = kdeplot(class_data, first_digit_9[count], second_digit_9[count],
+                                    list_of_lines[count].combo_hue.get(),
+                                    list_of_lines[count].combo_first_param.get(),
+                                    list_of_lines[count].combo_first_value.get(),
+                                    list_of_lines[count].combo_sec_param.get(),
+                                    list_of_lines[count].combo_sec_value.get())
+                else:
+                    plot = 0
+            except:
+                pass
+
+        if num_plots == 1:
+            plot = kdeplot(class_data, 'None', 'None',
+                            list_of_lines[0].combo_hue.get(),
+                            list_of_lines[0].combo_first_param.get(),
+                            list_of_lines[0].combo_first_value.get(),
+                            list_of_lines[0].combo_sec_param.get(),
+                            list_of_lines[0].combo_sec_value.get())
 
     canvas = FigureCanvasTkAgg(plot, master=root)
     canvas.draw()
-    canvas.get_tk_widget().grid(row=12, column=0, columnspan=10, rowspan=10)
+    canvas.get_tk_widget().grid(row=12, column=1, columnspan=10, rowspan=10)
 
+    # Saving function
+    button_save = Button(root, text="\U0001f4be", command=lambda: save_files())
+    button_save.grid(row=10, column=4)
 
+def save_files():
+    file_name = filedialog.asksaveasfilename(title="Save File",
+        filetypes=(("PNG Files", "*.png"), ("All Files", "*.*"))
+    )
+    save_plot(file_name, num_plots)
 root.mainloop()
