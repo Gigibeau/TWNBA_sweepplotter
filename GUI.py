@@ -8,15 +8,15 @@ from tkinter import filedialog
 root = Tk()
 
 # Parameters
-#num_plots = StringVar()
-#list_of_lines = []
+# num_plots = 0
+# list_of_lines = []
 first_digit = [0, 0, 1, 1]
 second_digit = [0, 1, 0, 1]
-
 
 # Button to load in a file
 button_open = Button(root, text="\U0001F4C2", command=lambda: open_files())
 button_open.grid(row=0, column=0)
+
 
 def open_files():
     file_name = filedialog.askopenfilename(
@@ -27,14 +27,15 @@ def open_files():
     class_data = Data(file_name)
 
     text.delete('1.0', END)
-    text.insert("end", "File name: " + file_name.split('/')[-1] + "\n"
-                "parameters: " + str(class_data.parameters) + "\n"
-                "sweep: " + str(class_data.sweep) + "\n"
-                "steps: " + str(class_data.steps) + "\n"
-                "runs: " + str(class_data.runs) + "\n")
+    text.insert("end", "File name: " + file_name.split('/')[-1]
+                + "\n" "parameters: " + str(class_data.parameters)
+                + "\n" "sweep: " + str(class_data.sweep) + "\n" "steps: "
+                + str(class_data.steps) + "\n" "runs: "
+                + str(class_data.runs) + "\n")
     text.see("end")
     combo_num_plots.config(state='readonly')
     button_set_num_plots.config(state='normal')
+
 
 # Placement of the log
 text = Text(root, width=40, height=8)
@@ -45,13 +46,33 @@ num_plots_values = ["4", "9"]
 combo_num_plots = ttk.Combobox(root, values=num_plots_values, state='disabled')
 combo_num_plots.set("How many plots?")
 combo_num_plots.grid(row=0, column=1)
-button_set_num_plots = Button(root, text='Set', state='disabled', command=lambda: set_num_plots(combo_num_plots.get(), class_data))
+button_set_num_plots = Button(root, text='Set', state='disabled',
+                              command=lambda: set_num_plots(combo_num_plots.get(), class_data))
 button_set_num_plots.grid(row=0, column=2)
+
 
 def set_num_plots(num, data):
     global num_plots
-    num_plots = int(num)
     global list_of_lines
+    for count in range(9):
+        try:
+            list_of_lines[count].combo_hue.destroy()
+            list_of_lines[count].combo_first_param.destroy()
+            list_of_lines[count].combo_sec_param.destroy()
+        except:
+            pass
+        try:
+            list_of_lines[count].combo_first_value.destroy()
+        except:
+            pass
+        try:
+            list_of_lines[count].combo_sec_value.destroy()
+        except:
+            pass
+
+
+
+    num_plots = int(num)
     list_of_lines = []
     lines = 1
     for count in range(num_plots):
@@ -61,24 +82,28 @@ def set_num_plots(num, data):
     button_exec_plot = Button(root, text='Execute', command=lambda: exec_plot())
     button_exec_plot.grid(row=9, column=2, padx=2, pady=2)
 
+
 # Recipe input
 class Command:
     def __init__(self, row, column, data):
+        self.combo_first_value = None
+        self.combo_sec_value = None
         param_with_none = data.parameters.copy()
         param_with_none.append('None')
 
         def first_param_update(event):
-            self.combo_first_value = ttk.Combobox(root, state='readonly', values=data.dict_of_unique_param[self.combo_first_param.get()])
+            self.combo_first_value = ttk.Combobox(root, state='readonly',
+                                                  values=data.dict_of_unique_param[self.combo_first_param.get()])
             self.combo_first_value.set("First value")
             self.combo_first_value.grid(row=row, column=column + 1, padx=2, pady=2)
 
         def sec_param_update(event):
             if self.combo_sec_param.get() == 'None':
                 self.combo_sec_value = ttk.Combobox(root, state='readonly',
-                                                      values=['None'])
+                                                    values=['None'])
             else:
                 self.combo_sec_value = ttk.Combobox(root, state='readonly',
-                                                      values=data.dict_of_unique_param[self.combo_sec_param.get()])
+                                                    values=data.dict_of_unique_param[self.combo_sec_param.get()])
             self.combo_sec_value.set("Second value")
             self.combo_sec_value.grid(row=row, column=column + 3, padx=2, pady=2)
 
@@ -96,6 +121,7 @@ class Command:
         self.combo_hue.set("hue")
         self.combo_hue.grid(row=row, column=column + 5, padx=2, pady=2)
 
+
 # Executing the plot
 def exec_plot():
     for count in range(num_plots):
@@ -106,7 +132,8 @@ def exec_plot():
         print(list_of_lines[count].combo_sec_param.get())
         print(list_of_lines[count].combo_sec_value.get())
 
-        plot = lineplot(class_data, num_plots, first_digit[count], second_digit[count], list_of_lines[count].combo_hue.get(),
+        plot = lineplot(class_data, num_plots, first_digit[count], second_digit[count],
+                        list_of_lines[count].combo_hue.get(),
                         list_of_lines[count].combo_first_param.get(),
                         list_of_lines[count].combo_first_value.get(), list_of_lines[count].combo_sec_param.get(),
                         list_of_lines[count].combo_sec_value.get())
@@ -115,13 +142,5 @@ def exec_plot():
         canvas.draw()
         canvas.get_tk_widget().grid(row=10, column=0, columnspan=5, rowspan=5)
 
-'''
-    plot = lineplot(class_data, num_plots, 0, 0, list_of_lines[0].combo_hue.get(), list_of_lines[0].combo_first_param.get(),
-            list_of_lines[0].combo_first_value.get(), list_of_lines[0].combo_sec_param.get(), list_of_lines[0].combo_sec_value.get())
-
-    canvas = FigureCanvasTkAgg(plot, master=root)  # A tk.DrawingArea.
-    canvas.draw()
-    canvas.get_tk_widget().grid(row=10, column=0, columnspan=5, rowspan=5)
-'''
 
 root.mainloop()
