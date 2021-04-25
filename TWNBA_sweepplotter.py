@@ -67,12 +67,15 @@ class Data:
 
 def set_grid(num_plots):
     global fig, ax
-    #ax = 0  # just to prevent errors
     if num_plots == 4:
-        fig, ax = plt.subplots(2, 2, figsize=(5, 5))
+        fig, ax = plt.subplots(2, 2, figsize=(8, 6))
 
     if num_plots == 9:
-        fig, ax = plt.subplots(3, 3, figsize=(5, 5))
+        fig, ax = plt.subplots(3, 3, figsize=(8, 6))
+
+    if num_plots == 1:
+        fig, ax = plt.subplots(1, 1, figsize=(8, 6))
+
 
 def lineplot(data, position1, position2, hue, first_param, first_value, second_param='None', second_value='None'):
     if second_param == 'None':
@@ -80,13 +83,16 @@ def lineplot(data, position1, position2, hue, first_param, first_value, second_p
     else:
         df_to_plot = data.df[(data.df[first_param] == first_value) & (data.df[second_param] == second_value)]
 
-    sns.lineplot(data=df_to_plot, x=data.sweep, y="I(R_vs)/I(R_rs)", hue=hue, ax=ax[position1, position2]).legend_.remove()
-    ax[position1, position2].set(ylim=(0.1, 10), xscale="log", yscale="log", xlabel='Sweep',
-                                 ylabel='Parameter 2', title='Parameter 1')
+    if position1 == 'None':
+        sns.lineplot(data=df_to_plot, x=data.sweep, y="I(R_vs)/I(R_rs)", hue=hue
+                     ).legend_.remove()
+        ax.set(ylim=(0.1, 10), xscale="log", yscale="log", xlabel='Sweep',
+                                     ylabel='Parameter 2', title='Parameter 1')
+
+    else:
+        sns.lineplot(data=df_to_plot, x=data.sweep, y="I(R_vs)/I(R_rs)", hue=hue,
+                     ax=ax[position1, position2]).legend_.remove()
+        ax[position1, position2].set(ylim=(0.1, 10), xscale="log", yscale="log", xlabel='Sweep',
+                                     ylabel='Parameter 2', title='Parameter 1')
+
     return fig
-
-
-#data_test = Data('FBP_Case1spec.txt')
-#print(data_test.dict_of_unique_param)
-#print(data.parameters)
-#lineplot(data_test, 6, 0, 0, 'I_rs', 'Elec', '100m', 'Rho', '100m')
