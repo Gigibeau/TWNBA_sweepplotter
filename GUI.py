@@ -1,6 +1,6 @@
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-from TWNBA_sweepplotter import Data, lineplot
+from TWNBA_sweepplotter import Data, lineplot, set_grid
 from tkinter import *  # NOQA
 from tkinter import ttk
 from tkinter import filedialog
@@ -10,8 +10,10 @@ root = Tk()
 # Parameters
 # num_plots = 0
 # list_of_lines = []
-first_digit = [0, 0, 1, 1]
-second_digit = [0, 1, 0, 1]
+first_digit_4 = [0, 0, 1, 1]
+second_digit_4 = [0, 1, 0, 1]
+first_digit_9 = [0, 0, 0, 1, 1, 1, 2, 2, 2]
+second_digit_9 = [0, 1, 2, 0, 1, 2, 0, 1, 2]
 
 # Button to load in a file
 button_open = Button(root, text="\U0001F4C2", command=lambda: open_files())
@@ -19,8 +21,30 @@ button_open.grid(row=0, column=0)
 
 
 def open_files():
-    file_name = filedialog.askopenfilename(
-        initialdir="/Users/beau/Coding", title="Open File",
+    for count in range(9):
+        try:
+            list_of_lines[count].combo_hue.destroy()
+            list_of_lines[count].combo_first_param.destroy()
+            list_of_lines[count].combo_sec_param.destroy()
+        except:
+            print('(:')
+
+        try:
+            list_of_lines[count].combo_first_value.destroy()
+        except:
+            print('(:')
+
+        try:
+            list_of_lines[count].combo_sec_value.destroy()
+        except:
+            print('(:')
+
+        try:
+            canvas.get_tk_widget().destroy()
+        except:
+            print('(:')
+
+    file_name = filedialog.askopenfilename(title="Open File",
         filetypes=(("Text Files", "*.txt"), ("All Files", "*.*"))
     )
     global class_data
@@ -60,17 +84,19 @@ def set_num_plots(num, data):
             list_of_lines[count].combo_first_param.destroy()
             list_of_lines[count].combo_sec_param.destroy()
         except:
-            pass
+            print('(:')
         try:
             list_of_lines[count].combo_first_value.destroy()
         except:
-            pass
+            print('(:')
         try:
             list_of_lines[count].combo_sec_value.destroy()
         except:
-            pass
-
-
+            print('(:')
+        try:
+            canvas.get_tk_widget().destroy()
+        except:
+            print('(:')
 
     num_plots = int(num)
     list_of_lines = []
@@ -80,7 +106,7 @@ def set_num_plots(num, data):
         lines += 1
 
     button_exec_plot = Button(root, text='Execute', command=lambda: exec_plot())
-    button_exec_plot.grid(row=9, column=2, padx=2, pady=2)
+    button_exec_plot.grid(row=10, column=2, padx=2, pady=2)
 
 
 # Recipe input
@@ -124,6 +150,7 @@ class Command:
 
 # Executing the plot
 def exec_plot():
+    set_grid(num_plots)
     for count in range(num_plots):
         print(num_plots)
         print(list_of_lines[count].combo_hue.get())
@@ -132,15 +159,25 @@ def exec_plot():
         print(list_of_lines[count].combo_sec_param.get())
         print(list_of_lines[count].combo_sec_value.get())
 
-        plot = lineplot(class_data, num_plots, first_digit[count], second_digit[count],
-                        list_of_lines[count].combo_hue.get(),
-                        list_of_lines[count].combo_first_param.get(),
-                        list_of_lines[count].combo_first_value.get(), list_of_lines[count].combo_sec_param.get(),
-                        list_of_lines[count].combo_sec_value.get())
+        if num_plots == 4:
+            plot = lineplot(class_data, first_digit_4[count], second_digit_4[count],
+                            list_of_lines[count].combo_hue.get(),
+                            list_of_lines[count].combo_first_param.get(),
+                            list_of_lines[count].combo_first_value.get(), list_of_lines[count].combo_sec_param.get(),
+                            list_of_lines[count].combo_sec_value.get())
+        elif num_plots == 9:
+            plot = lineplot(class_data, first_digit_9[count], second_digit_9[count],
+                            list_of_lines[count].combo_hue.get(),
+                            list_of_lines[count].combo_first_param.get(),
+                            list_of_lines[count].combo_first_value.get(), list_of_lines[count].combo_sec_param.get(),
+                            list_of_lines[count].combo_sec_value.get())
+        else:
+            break
 
-        canvas = FigureCanvasTkAgg(plot, master=root)  # A tk.DrawingArea.
+        global canvas
+        canvas = FigureCanvasTkAgg(plot, master=root)
         canvas.draw()
-        canvas.get_tk_widget().grid(row=10, column=0, columnspan=5, rowspan=5)
+        canvas.get_tk_widget().grid(row=12, column=0, columnspan=10, rowspan=10)
 
 
 root.mainloop()

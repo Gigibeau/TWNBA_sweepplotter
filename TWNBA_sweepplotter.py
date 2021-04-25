@@ -65,14 +65,16 @@ class Data:
         self.df[self.sweep] = pd.to_numeric(self.df[self.sweep])
 
 
-def lineplot(data, num_plots, position1, position2, hue, first_param, first_value, second_param='None', second_value='None'):
-    ax = 0  # just to prevent errors
+def set_grid(num_plots):
+    global fig, ax
+    #ax = 0  # just to prevent errors
     if num_plots == 4:
         fig, ax = plt.subplots(2, 2, figsize=(5, 5))
 
     if num_plots == 9:
         fig, ax = plt.subplots(3, 3, figsize=(5, 5))
 
+def lineplot(data, position1, position2, hue, first_param, first_value, second_param='None', second_value='None'):
     if second_param == 'None':
         df_to_plot = data.df[(data.df[first_param] == first_value)]
     else:
@@ -81,9 +83,6 @@ def lineplot(data, num_plots, position1, position2, hue, first_param, first_valu
     sns.lineplot(data=df_to_plot, x=data.sweep, y="I(R_vs)/I(R_rs)", hue=hue, ax=ax[position1, position2]).legend_.remove()
     ax[position1, position2].set(ylim=(0.1, 10), xscale="log", yscale="log", xlabel='Sweep',
                                  ylabel='Parameter 2', title='Parameter 1')
-
-
-    plt.show()
     return fig
 
 
