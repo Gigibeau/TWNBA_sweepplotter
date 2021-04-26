@@ -88,6 +88,8 @@ def set_grid(num_plots):
 def lineplot(data, position1, position2, hue, first_param, first_value, second_param='None', second_value='None'):
     if second_param == 'None':
         df_to_plot = data.df[(data.df[first_param] == first_value)]
+        second_param = ' '
+        second_value = ' '
     else:
         df_to_plot = data.df[(data.df[first_param] == first_value) & (data.df[second_param] == second_value)]
 
@@ -111,6 +113,8 @@ def lineplot(data, position1, position2, hue, first_param, first_value, second_p
 def kdeplot(data, position1, position2, hue, first_param, first_value, second_param='None', second_value='None'):
     if second_param == 'None':
         df_to_plot = data.df[(data.df[first_param] == first_value)]
+        second_param = ' '
+        second_value = ' '
     else:
         df_to_plot = data.df[(data.df[first_param] == first_value) & (data.df[second_param] == second_value)]
 
