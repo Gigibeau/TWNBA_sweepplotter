@@ -3,7 +3,7 @@ from TWNBA_sweepplotter import Data, lineplot, set_grid, save_plot, kdeplot
 from tkinter import *  # NOQA
 from tkinter import ttk
 from tkinter import filedialog
-
+from itertools import cycle
 
 root = Tk()
 w, h = root.winfo_screenwidth(), root.winfo_screenheight()
@@ -12,7 +12,7 @@ root.geometry("%dx%d+0+0" % (w, h))
 # Parameters
 global canvas
 global class_data
-global num_plots
+global num_plots, sec_cycle_value, sec_cycle, first_cycle
 global list_of_lines
 first_digit_4 = [0, 0, 1, 1]
 second_digit_4 = [0, 1, 0, 1]
@@ -72,7 +72,7 @@ button_set_num_plots.grid(row=0, column=2)
 
 
 def set_num_plots(num, data):
-    global num_plots
+    global num_plots, sec_cycle_value, sec_cycle, first_cycle
     global list_of_lines
 
     try:
@@ -96,6 +96,35 @@ def set_num_plots(num, data):
     for count in range(num_plots):
         list_of_lines.append(Command(lines, 1, data))
         lines += 1
+
+    try:
+        first_cycle = cycle(range(len(data.dict_of_unique_param[list_of_lines[0].combo_first_param.get()])))
+    except KeyError:
+        pass
+
+    try:
+        sec_cycle = cycle(range(len(data.dict_of_unique_param[list_of_lines[0].combo_sec_param.get()])))
+    except KeyError:
+        pass
+    cycle_help = [1, 0, 0, 1, 0, 0, 1, 0, 0]
+    cycle_count = 0
+
+    if num_plots == 4:
+        for line in list_of_lines:
+            first_cycle_value = next(first_cycle)
+            line.combo_first_value.current(first_cycle_value)
+
+    if num_plots == 9:
+        for line in list_of_lines:
+            first_cycle_value = next(first_cycle)
+            line.combo_first_value.current(first_cycle_value)
+            try:
+                if cycle_help[cycle_count] == 1:
+                    sec_cycle_value = next(sec_cycle)
+                line.combo_sec_value.current(sec_cycle_value)
+            except (TclError, NameError):
+                pass
+            cycle_count += 1
 
     button_exec_lineplot = Button(root, text='Execute Lineplot', command=lambda: exec_plot('line'))
     button_exec_lineplot.grid(row=10, column=3)
