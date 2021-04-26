@@ -93,13 +93,13 @@ def lineplot(data, position1, position2, hue, first_param, first_value, second_p
 
     if position1 == 'None':
         sns.lineplot(data=df_to_plot, x=data.sweep, y="I(R_vs)/I(R_rs)", hue=hue
-                     ).legend_.remove()
+                     )
         ax.set(ylim=(0.1, 10), xscale="log", yscale="log", xlabel='Sweep',
                ylabel='Parameter 2', title='Parameter 1')
 
     else:
         sns.lineplot(data=df_to_plot, x=data.sweep, y="I(R_vs)/I(R_rs)", hue=hue,
-                     ax=ax[position1, position2]).legend_.remove()
+                     ax=ax[position1, position2])
         ax[position1, position2].set(ylim=(0.1, 10), xscale="log", yscale="log", xlabel='Sweep',
                                      ylabel='Parameter 2', title='Parameter 1')
 

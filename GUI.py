@@ -20,7 +20,7 @@ first_digit_9 = [0, 0, 0, 1, 1, 1, 2, 2, 2]
 second_digit_9 = [0, 1, 2, 0, 1, 2, 0, 1, 2]
 
 # Button to load in a file
-button_open = Button(root, text="\U0001F4C2", command=lambda: open_files())
+button_open = Button(root, text="open", command=lambda: open_files())
 button_open.grid(row=0, column=0)
 
 
@@ -222,7 +222,7 @@ def exec_plot(kind):
     canvas.get_tk_widget().grid(row=12, column=1, columnspan=10, rowspan=10)
 
     # Saving function
-    button_save = Button(root, text="\U0001f4be", command=lambda: save_files())
+    button_save = Button(root, text="save", command=lambda: save_files())
     button_save.grid(row=10, column=5)
 
 
