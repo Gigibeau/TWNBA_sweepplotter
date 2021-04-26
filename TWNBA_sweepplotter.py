@@ -93,15 +93,16 @@ def lineplot(data, position1, position2, hue, first_param, first_value, second_p
 
     if position1 == 'None':
         sns.lineplot(data=df_to_plot, x=data.sweep, y="I(R_vs)/I(R_rs)", hue=hue
-                     )
-        ax.set(ylim=(0.1, 10), xscale="log", yscale="log", xlabel='Sweep',
-               ylabel='Parameter 2', title='Parameter 1')
+                     ).legend(fontsize=5, frameon=False)
+        ax.set(ylim=(0.1, 10), xscale="log", yscale="log", xlabel=data.sweep,
+               ylabel=(second_param + ' ' + second_value), title=(first_param + ' ' + first_value))
 
     else:
         sns.lineplot(data=df_to_plot, x=data.sweep, y="I(R_vs)/I(R_rs)", hue=hue,
-                     ax=ax[position1, position2])
-        ax[position1, position2].set(ylim=(0.1, 10), xscale="log", yscale="log", xlabel='Sweep',
-                                     ylabel='Parameter 2', title='Parameter 1')
+                     ax=ax[position1, position2]).legend(fontsize=5, frameon=False)
+        ax[position1, position2].set(ylim=(0.1, 10), xscale="log", yscale="log", xlabel=data.sweep,
+                                     ylabel=(second_param + ' ' + second_value),
+                                     title=(first_param + ' ' + first_value))
 
     fig.tight_layout()
     return fig
@@ -115,15 +116,16 @@ def kdeplot(data, position1, position2, hue, first_param, first_value, second_pa
 
     if position1 == 'None':
         sns.kdeplot(data=df_to_plot, x=data.sweep, y="I(R_vs)/I(R_rs)", hue=hue
-                    ).legend_.remove()
-        ax.set(ylim=(0.1, 10), xscale="log", yscale="log", xlabel='Sweep',
-               ylabel='Parameter 2', title='Parameter 1')
+                    ).legend(fontsize=5, frameon=False)
+        ax.set(ylim=(0.1, 10), xscale="log", yscale="log", xlabel=data.sweep,
+               ylabel=(second_param + ' ' + second_value), title=(first_param + ' ' + first_value))
 
     else:
         sns.kdeplot(data=df_to_plot, x=data.sweep, y="I(R_vs)/I(R_rs)", hue=hue,
-                    ax=ax[position1, position2]).legend_.remove()
-        ax[position1, position2].set(ylim=(0.1, 10), xscale="log", yscale="log", xlabel='Sweep',
-                                     ylabel='Parameter 2', title='Parameter 1')
+                    ax=ax[position1, position2]).legend(fontsize=5, frameon=False)
+        ax[position1, position2].set(ylim=(0.1, 10), xscale="log", yscale="log", xlabel=data.sweep,
+                                     ylabel=(second_param + ' ' + second_value),
+                                     title=(first_param + ' ' + first_value))
 
     fig.tight_layout()
     return fig
@@ -137,12 +139,12 @@ def save_plot(name, num_plots):
         for x in range(4):
             extent = ax[first_digit_4[x], second_digit_4[x]].get_window_extent().transformed(
                 fig.dpi_scale_trans.inverted())
-            fig.savefig(name + '_' + str(name_num) + '.png', bbox_inches=extent.expanded(1.3, 1.3))
+            fig.savefig(name + '_' + str(name_num) + '.png', bbox_inches=extent.expanded(1.32, 1.3))
             name_num += 1
 
     if num_plots == 9:
         for x in range(9):
             extent = ax[first_digit_9[x], second_digit_9[x]].get_window_extent().transformed(
                 fig.dpi_scale_trans.inverted())
-            fig.savefig(name + '_' + str(name_num) + '.png', bbox_inches=extent.expanded(1.3, 1.3))
+            fig.savefig(name + '_' + str(name_num) + '.png', bbox_inches=extent.expanded(1.32, 1.3))
             name_num += 1

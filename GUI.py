@@ -4,7 +4,6 @@ from tkinter import *  # NOQA
 from tkinter import ttk
 from tkinter import filedialog
 
-
 root = Tk()
 w, h = root.winfo_screenwidth(), root.winfo_screenheight()
 root.geometry("%dx%d+0+0" % (w, h))
@@ -143,6 +142,21 @@ class Command:
         self.combo_hue = ttk.Combobox(root, values=data.parameters, state='readonly')
         self.combo_hue.set("hue")
         self.combo_hue.grid(row=row, column=column + 5, padx=2, pady=2)
+
+        # Set the inital selected parameters
+        if num_plots == 4:
+            self.combo_first_param.current(1)
+            self.combo_sec_param.current(2)
+            self.combo_hue.current(0)
+            first_param_update('_')
+            sec_param_update('_')
+
+        if num_plots == 9:
+            self.combo_first_param.current(1)
+            self.combo_sec_param.current(2)
+            self.combo_hue.current(0)
+            first_param_update('_')
+            sec_param_update('_')
 
 
 # Executing the plot
