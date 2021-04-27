@@ -108,6 +108,6 @@ def lineplot(data, prime_parameters):
     plt.show()
 
 
-data = Data('FBP_Case6spec.txt')
+data = Data('../Testfile2.txt')
 print(data.df)
 #lineplot(data, 'rho')
