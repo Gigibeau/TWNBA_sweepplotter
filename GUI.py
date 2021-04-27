@@ -171,7 +171,7 @@ class Command:
 
         self.combo_hue = ttk.Combobox(root, values=data.parameters, state='readonly')
         self.combo_hue.set("hue")
-        self.combo_hue.grid(row=row, column=column + 5, padx=2, pady=2)
+        self.combo_hue.grid(row=row, column=column + 4, padx=2, pady=2)
 
         # Set the inital selected parameters
         if num_plots == 4:
