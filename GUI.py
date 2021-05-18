@@ -6,8 +6,10 @@ from tkinter import filedialog
 from itertools import cycle
 
 root = Tk()
+root.title('TWNBA Sweepplotter')
 w, h = root.winfo_screenwidth(), root.winfo_screenheight()
-root.geometry("%dx%d+0+0" % (w, h))
+root.geometry("%dx%d+0+0" % (w * 0.5, h * 0.5))
+
 
 # Parameters
 global canvas
@@ -28,7 +30,7 @@ button_open.grid(row=0, column=0)
 
 def open_files():
     try:
-        canvas.get_tk_widget().grid_forget()
+        canvas.get_tk_widget().destroy()
     except NameError:
         pass
 
@@ -78,7 +80,7 @@ def set_num_plots(num, data):
     global list_of_lines
 
     try:
-        canvas.get_tk_widget().grid_forget()
+        canvas.get_tk_widget().destroy()
     except NameError:
         pass
 
@@ -217,7 +219,7 @@ def exec_plot(kind):
     plot = None
 
     try:
-        canvas.get_tk_widget().grid_forget()
+        canvas.get_tk_widget().destroy()
     except NameError:
         pass
 
@@ -301,9 +303,11 @@ def exec_plot(kind):
                            list_of_lines[0].combo_sec_param.get(),
                            list_of_lines[0].combo_sec_value.get())
 
-    canvas = FigureCanvasTkAgg(plot, master=root)
+    root2 = Toplevel()
+
+    canvas = FigureCanvasTkAgg(plot, master=root2)
+    canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1.0)
     canvas.draw()
-    canvas.get_tk_widget().grid(row=35, column=1, columnspan=10, rowspan=10)
 
     # Saving function
     button_save = Button(root, text="save", command=lambda: save_files())

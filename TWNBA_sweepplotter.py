@@ -78,10 +78,10 @@ class Data:
 def set_grid(num_plots):
     global fig, ax
     if num_plots == 4:
-        fig, ax = plt.subplots(2, 2, figsize=(10, 8))
+        fig, ax = plt.subplots(2, 2, figsize=(20, 16))
 
     if num_plots == 9:
-        fig, ax = plt.subplots(3, 3, figsize=(10, 8))
+        fig, ax = plt.subplots(3, 3, figsize=(20, 16))
 
     if num_plots == 16:
         fig, ax = plt.subplots(4, 4, figsize=(20, 16))
@@ -100,13 +100,13 @@ def lineplot(data, position1, position2, hue, first_param, first_value, second_p
 
     if position1 == 'None':
         sns.lineplot(data=df_to_plot, x=data.sweep, y="I(R_vs)/I(R_rs)", hue=hue
-                     ).legend(fontsize=5, frameon=False)
+                     ).legend(fontsize=10, frameon=False, labelspacing=0.2)
         ax.set(ylim=(0.1, 10), xscale="log", yscale="log", xlabel=data.sweep,
                ylabel=(second_param + ' ' + second_value), title=(first_param + ' ' + first_value))
 
     else:
         sns.lineplot(data=df_to_plot, x=data.sweep, y="I(R_vs)/I(R_rs)", hue=hue,
-                     ax=ax[position1, position2]).legend(fontsize=5, frameon=False)
+                     ax=ax[position1, position2]).legend(fontsize=10, frameon=False, labelspacing=0.2)
         ax[position1, position2].set(ylim=(0.1, 10), xscale="log", yscale="log", xlabel=data.sweep,
                                      ylabel=(second_param + ' ' + second_value),
                                      title=(first_param + ' ' + first_value))
@@ -125,13 +125,13 @@ def kdeplot(data, position1, position2, hue, first_param, first_value, second_pa
 
     if position1 == 'None':
         sns.kdeplot(data=df_to_plot, x=data.sweep, y="I(R_vs)/I(R_rs)", hue=hue
-                    ).legend(fontsize=5, frameon=False)
+                    ).legend(fontsize=10, frameon=False, labelspacing=0.2)
         ax.set(ylim=(0.1, 10), xscale="log", yscale="log", xlabel=data.sweep,
                ylabel=(second_param + ' ' + second_value), title=(first_param + ' ' + first_value))
 
     else:
         sns.kdeplot(data=df_to_plot, x=data.sweep, y="I(R_vs)/I(R_rs)", hue=hue,
-                    ax=ax[position1, position2]).legend(fontsize=5, frameon=False)
+                    ax=ax[position1, position2]).legend(fontsize=10, frameon=False, labelspacing=0.2)
         ax[position1, position2].set(ylim=(0.1, 10), xscale="log", yscale="log", xlabel=data.sweep,
                                      ylabel=(second_param + ' ' + second_value),
                                      title=(first_param + ' ' + first_value))
