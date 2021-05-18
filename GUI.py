@@ -18,6 +18,8 @@ first_digit_4 = [0, 0, 1, 1]
 second_digit_4 = [0, 1, 0, 1]
 first_digit_9 = [0, 0, 0, 1, 1, 1, 2, 2, 2]
 second_digit_9 = [0, 1, 2, 0, 1, 2, 0, 1, 2]
+first_digit_16 = [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3]
+second_digit_16 = [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3]
 
 # Button to load in a file
 button_open = Button(root, text="open", command=lambda: open_files())
@@ -62,7 +64,7 @@ text = Text(root, width=40, height=8)
 text.grid(row=0, column=3, columnspan=10)
 
 # Combo to pick the number of plots
-num_plots_values = ['1', "4", "9"]
+num_plots_values = ['1', "4", "9", "16"]
 combo_num_plots = ttk.Combobox(root, values=num_plots_values, state='disabled')
 combo_num_plots.set("How many plots?")
 combo_num_plots.grid(row=0, column=1)
@@ -80,7 +82,7 @@ def set_num_plots(num, data):
     except NameError:
         pass
 
-    for count in range(9):
+    for count in range(16):
         try:
             list_of_lines[count].combo_hue.grid_forget()
             list_of_lines[count].combo_first_param.grid_forget()
@@ -107,6 +109,7 @@ def set_num_plots(num, data):
     except KeyError:
         pass
     cycle_help = [1, 0, 0, 1, 0, 0, 1, 0, 0]
+    cycle_help_16 = [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0]
     cycle_count = 0
 
     if num_plots == 4:
@@ -126,11 +129,23 @@ def set_num_plots(num, data):
                 pass
             cycle_count += 1
 
+    if num_plots == 16:
+        for line in list_of_lines:
+            first_cycle_value = next(first_cycle)
+            line.combo_first_value.current(first_cycle_value)
+            try:
+                if cycle_help_16[cycle_count] == 1:
+                    sec_cycle_value = next(sec_cycle)
+                line.combo_sec_value.current(sec_cycle_value)
+            except (TclError, NameError):
+                pass
+            cycle_count += 1
+
     button_exec_lineplot = Button(root, text='Execute Lineplot', command=lambda: exec_plot('line'))
-    button_exec_lineplot.grid(row=10, column=3)
+    button_exec_lineplot.grid(row=34, column=3)
 
     button_exec_kdeplot = Button(root, text='Execute Kdeplot', command=lambda: exec_plot('kde'))
-    button_exec_kdeplot.grid(row=10, column=4)
+    button_exec_kdeplot.grid(row=34, column=4)
 
 
 # Recipe input
@@ -188,6 +203,13 @@ class Command:
             first_param_update('_')
             sec_param_update('_')
 
+        if num_plots == 16:
+            self.combo_first_param.current(1)
+            self.combo_sec_param.current(2)
+            self.combo_hue.current(0)
+            first_param_update('_')
+            sec_param_update('_')
+
 
 # Executing the plot
 def exec_plot(kind):
@@ -218,6 +240,15 @@ def exec_plot(kind):
                                     list_of_lines[count].combo_first_value.get(),
                                     list_of_lines[count].combo_sec_param.get(),
                                     list_of_lines[count].combo_sec_value.get())
+
+                elif num_plots == 16:
+                    plot = lineplot(class_data, first_digit_16[count], second_digit_16[count],
+                                    list_of_lines[count].combo_hue.get(),
+                                    list_of_lines[count].combo_first_param.get(),
+                                    list_of_lines[count].combo_first_value.get(),
+                                    list_of_lines[count].combo_sec_param.get(),
+                                    list_of_lines[count].combo_sec_value.get())
+
                 else:
                     plot = 0
             except (TypeError, KeyError):
@@ -248,6 +279,15 @@ def exec_plot(kind):
                                    list_of_lines[count].combo_first_value.get(),
                                    list_of_lines[count].combo_sec_param.get(),
                                    list_of_lines[count].combo_sec_value.get())
+
+                elif num_plots == 16:
+                    plot = lineplot(class_data, first_digit_16[count], second_digit_16[count],
+                                    list_of_lines[count].combo_hue.get(),
+                                    list_of_lines[count].combo_first_param.get(),
+                                    list_of_lines[count].combo_first_value.get(),
+                                    list_of_lines[count].combo_sec_param.get(),
+                                    list_of_lines[count].combo_sec_value.get())
+
                 else:
                     plot = 0
             except (TypeError, KeyError):
@@ -263,11 +303,11 @@ def exec_plot(kind):
 
     canvas = FigureCanvasTkAgg(plot, master=root)
     canvas.draw()
-    canvas.get_tk_widget().grid(row=12, column=1, columnspan=10, rowspan=10)
+    canvas.get_tk_widget().grid(row=35, column=1, columnspan=10, rowspan=10)
 
     # Saving function
     button_save = Button(root, text="save", command=lambda: save_files())
-    button_save.grid(row=10, column=5)
+    button_save.grid(row=34, column=5)
 
 
 def save_files():

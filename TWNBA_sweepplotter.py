@@ -12,6 +12,8 @@ first_digit_4 = [0, 0, 1, 1]
 second_digit_4 = [0, 1, 0, 1]
 first_digit_9 = [0, 0, 0, 1, 1, 1, 2, 2, 2]
 second_digit_9 = [0, 1, 2, 0, 1, 2, 0, 1, 2]
+first_digit_16 = [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3]
+second_digit_16 = [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3]
 
 
 class Data:
@@ -81,6 +83,9 @@ def set_grid(num_plots):
     if num_plots == 9:
         fig, ax = plt.subplots(3, 3, figsize=(10, 8))
 
+    if num_plots == 16:
+        fig, ax = plt.subplots(4, 4, figsize=(20, 16))
+
     if num_plots == 1:
         fig, ax = plt.subplots(1, 1, figsize=(10, 8))
 
@@ -149,6 +154,13 @@ def save_plot(name, num_plots):
     if num_plots == 9:
         for x in range(9):
             extent = ax[first_digit_9[x], second_digit_9[x]].get_window_extent().transformed(
+                fig.dpi_scale_trans.inverted())
+            fig.savefig(name + '_' + str(name_num) + '.png', bbox_inches=extent.expanded(1.32, 1.3))
+            name_num += 1
+
+    if num_plots == 16:
+        for x in range(16):
+            extent = ax[first_digit_16[x], second_digit_16[x]].get_window_extent().transformed(
                 fig.dpi_scale_trans.inverted())
             fig.savefig(name + '_' + str(name_num) + '.png', bbox_inches=extent.expanded(1.32, 1.3))
             name_num += 1
